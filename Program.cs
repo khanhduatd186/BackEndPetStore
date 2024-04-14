@@ -29,6 +29,32 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "ApiPetShop", Version = "1.0" });
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = "Jwt Authorization",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.Http,
+        BearerFormat = "JWT",
+        Scheme = "Bearer"
+    });
+    c.AddSecurityRequirement(
+       new OpenApiSecurityRequirement
+       {
+            {
+                new OpenApiSecurityScheme
+                {
+                    Reference = new OpenApiReference
+                    {
+                        Type =  ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                    }
+                },
+                new string []{}
+            }
+       });
+
+
 });
 //builder.Services.AddSwaggerGen(s =>
 //    s.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -49,23 +75,8 @@ builder.Services.AddSwaggerGen(c =>
 
 //builder.Services.AddHangfireServer();
 
-builder.Services.AddSwaggerGen(c =>
-    c.AddSecurityRequirement(
-        new OpenApiSecurityRequirement
-        {
-            {
-                new OpenApiSecurityScheme
-                {
-                    Reference = new OpenApiReference
-                    {
-                        Type =  ReferenceType.SecurityScheme,
-                        Id = "Bearer"
-                    }
-                },
-                new string []{}
-            }
-        }
-    ));
+
+
 
 
 builder.Services.AddCors(options => options.AddDefaultPolicy(policy =>

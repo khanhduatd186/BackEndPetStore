@@ -21,7 +21,7 @@ namespace ApiPetShop.Controllers
             _ProductRepo = repository;
         }
         [HttpGet]
-
+        [Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> GetAllProduct()
         {
             try

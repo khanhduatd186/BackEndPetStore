@@ -16,6 +16,7 @@ namespace ApiPetShop.Data
         public string Adddress { get; set; }
         public virtual ICollection<Bill> Bills { get; set; }
         public virtual ICollection<Product_Cart> Product_Carts { get; set; }
+        public virtual ICollection<Service_Cart> Service_Carts { get; set; }
         public virtual ICollection<Contact> Contacts { get; set; }
 
 
