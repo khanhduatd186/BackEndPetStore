@@ -1,5 +1,5 @@
 ﻿using ApiPetShop.Data;
-
+using ApiPetShop.Helper;
 using ApiPetShop.Interface;
 using ApiPetShop.Models;
 using ApiPetShop.Repositories;
@@ -12,35 +12,28 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
-using Application.Common.Options;
-
-
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
-
-builder.Services.Configure<NotifyGoogleGmailApiOption>(builder.Configuration.GetSection("GoogleAPI:NotifyGmail"));
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "ApiPetShop", Version = "1.0" });
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "ApiPetShop", Version = "v1" });
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Description = "Jwt Authorization",
         Name = "Authorization",
         In = ParameterLocation.Header,
-        Type = SecuritySchemeType.Http,
+        Type = SecuritySchemeType.ApiKey,
         BearerFormat = "JWT",
         Scheme = "Bearer"
     });
     c.AddSecurityRequirement(
-       new OpenApiSecurityRequirement
-       {
+        new OpenApiSecurityRequirement
+        {
             {
                 new OpenApiSecurityScheme
                 {
@@ -52,22 +45,10 @@ builder.Services.AddSwaggerGen(c =>
                 },
                 new string []{}
             }
-       });
-
-
+        }
+    );
 });
-//builder.Services.AddSwaggerGen(s =>
-//    s.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-//    {
-//        Description = "Jwt Authorization",
-//        Name = "Authorization",
-//        In = ParameterLocation.Header,
-//        Type = SecuritySchemeType.Http,
-//        BearerFormat = "JWT",
-//        Scheme = "Bearer"
-//    })
 
-//);
 //builder.Services.AddHangfire(configuration => configuration
 //    .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
 //    .UseSimpleAssemblyNameTypeSerializer()
@@ -75,8 +56,22 @@ builder.Services.AddSwaggerGen(c =>
 
 //builder.Services.AddHangfireServer();
 
-
-
+//builder.Services.AddSwaggerGen(c => c.AddSecurityRequirement(
+//        new OpenApiSecurityRequirement
+//        {
+//            {
+//                new OpenApiSecurityScheme
+//                {
+//                    Reference = new OpenApiReference
+//                    {
+//                        Type =  ReferenceType.SecurityScheme,
+//                        Id = "Bearer"
+//                    }
+//                },
+//                new string []{}
+//            }
+//        }
+//    ));
 
 
 builder.Services.AddCors(options => options.AddDefaultPolicy(policy =>
@@ -122,11 +117,10 @@ builder.Services
         {
             ValidateIssuer = true,
             ValidateAudience = true,
-            ValidateLifetime = true,
             ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
             ValidAudience = builder.Configuration["JWT:ValidAudience"],
             ValidateIssuerSigningKey = true,
-          
+
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
         };
     });
@@ -137,11 +131,15 @@ builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IBillRepository, BillRepository>();
+builder.Services.AddScoped<ITimeRepository, TimeRepository>();
+builder.Services.AddScoped<IServiceRepository, ServiceRepository>();
 builder.Services.AddScoped<IMenuRepository, MenuRepository>();
 builder.Services.AddScoped<IContactRepository, ContactRepository>();
 builder.Services.AddScoped<IADVRepository, ADVRepository>();
 builder.Services.AddScoped<IProduct_BillRepository, Product_BillRepository>();
 builder.Services.AddScoped<IProduct_CartRepository, Product_CartRepository>();
+builder.Services.AddScoped<IService_CartRepository, Service_CartRepository>();
+builder.Services.AddScoped<IService_DetailRepository, Service_DetailRepository>();
 builder.Services.AddHangfire((sp, config) =>
 {
     var connect = sp.GetRequiredService<IConfiguration>().GetConnectionString("PetStore");
@@ -171,6 +169,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHangfireDashboard(); // Để quản lý các công việc
+app.UseHangfireServer();
+RecurringJob.AddOrUpdate<SetAutoCreateSchedule>("SetAutoCreateSchedule", x => x.UpdateAndDelete(), Cron.Daily());
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
