@@ -1,6 +1,5 @@
 ﻿using ApiPetShop.Interface;
 using ApiPetShop.Models;
-using Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -55,9 +54,7 @@ namespace ApiPetShop.Controllers
                 var service = await _serviceRepository.GetServiceAsync(Service_CartModel.IdServie);
                 var user = await _acRepo.GetUserById(Service_CartModel.IdUser);
                 
-                await _emailService.SendNewBookingAsync("vanhaontl@gmail.com", user.Email, user.Name,
-                    Service_CartModel.Time + " " + Service_CartModel.dateTime.ToString().Split(" ").First().Replace("T00:00:00", ""),
-                    service.Tittle, string.Format("{0:n0}", Service_CartModel.Price));
+                
 
                 return newService_Cart == null ? NotFound() : Ok(newService_Cart);
             }
