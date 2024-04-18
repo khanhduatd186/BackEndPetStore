@@ -21,7 +21,7 @@ namespace ApiPetShop.Controllers
             _ProductRepo = repository;
         }
         [HttpGet]
-        [Authorize(Roles = "ADMIN")]
+        [Route("GET_ALL")]
         public async Task<IActionResult> GetAllProduct()
         {
             try
@@ -37,8 +37,16 @@ namespace ApiPetShop.Controllers
         [Route("{id}")]
         public async Task<IActionResult> GetProductById(int id)
         {
-            var product = await _ProductRepo.GetProductAsync(id);
-            return product == null ? NotFound() : Ok(product);
+            try
+            {
+                var product = await _ProductRepo.GetProductAsync(id);
+                return product == null ? NotFound() : Ok(product);
+            }
+            catch
+            {
+                return BadRequest();
+            }
+
         }
         [HttpPost]
         [Route("UploadFile")]

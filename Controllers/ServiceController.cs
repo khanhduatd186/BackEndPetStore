@@ -1,4 +1,5 @@
-﻿using ApiPetShop.Interface;
+﻿using ApiPetShop.Data;
+using ApiPetShop.Interface;
 using ApiPetShop.Models;
 using ApiPetShop.OtherObjects;
 using Microsoft.AspNetCore.Authorization;
@@ -12,7 +13,6 @@ namespace ApiPetShop.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    
     public class ServiceController : ControllerBase
     {
         private readonly IServiceRepository _ServiceRepo;
@@ -39,8 +39,16 @@ namespace ApiPetShop.Controllers
         [Route("{id}")]
         public async Task<IActionResult> GetServiceById(int id)
         {
-            var Service = await _ServiceRepo.GetServiceAsync(id);
-            return Service == null ? NotFound() : Ok(Service);
+            try
+            {
+                var Service = await _ServiceRepo.GetServiceAsync(id);
+                return Service == null ? NotFound() : Ok(Service);
+            }
+            catch
+            {
+                return BadRequest();
+            }
+           
         }
         [HttpPost]
         [Route("UploadFile")]

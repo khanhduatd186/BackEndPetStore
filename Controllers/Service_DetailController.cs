@@ -37,8 +37,16 @@ namespace ApiPetShop.Controllers
         [HttpGet("{IdService}")]
         public async Task<IActionResult> GetListById([FromRoute] int IdService)
         {
-            var Service_Detail = await _bookRepo.GetListById(IdService);
-            return Service_Detail == null ? NotFound() : Ok(Service_Detail);
+            try
+            {
+                var Service_Detail = await _bookRepo.GetListById(IdService);
+                return Service_Detail == null ? NotFound() : Ok(Service_Detail);
+            }
+            catch
+            {
+                return BadRequest();
+            }
+           
         }
 
         [HttpPost]
