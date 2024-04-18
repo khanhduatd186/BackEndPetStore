@@ -23,31 +23,57 @@ namespace ApiPetShop.Controllers
         [Route("seed-roles")]
         public async Task<IActionResult> SeedRoles()
         {
-            var seerRoles = await _AcRepo.SeedRolesAsync();
+            try
+            {
+                var seerRoles = await _AcRepo.SeedRolesAsync();
 
-            return Ok(seerRoles);
+                return Ok(seerRoles);
+            }
+            catch
+            {
+                return BadRequest();
+                 
+            }
+           
         }
         [HttpPost]
         [Route("register")]
         public async Task<IActionResult> Register([FromBody] SignUpModel registerDto)
         {
-            var registerResult = await _AcRepo.SigUpAsync(registerDto);
+            try
+            {
+                var registerResult = await _AcRepo.SigUpAsync(registerDto);
 
-            if (registerResult.IsSucceed)
-                return Ok(registerResult);
+                if (registerResult.IsSucceed)
+                    return Ok(registerResult);
+                return BadRequest();
+            }
+            catch
+            {
+                return BadRequest();
+            }
 
-            return BadRequest(registerResult);
+            
         }
         [HttpPost]
         [Route("login")]
         public async Task<IActionResult> Login([FromBody] SignInModel loginDto)
         {
-            var loginResult = await _AcRepo.SigInAsync(loginDto);
+            try
+            {
+                var loginResult = await _AcRepo.SigInAsync(loginDto);
 
-            if (loginResult.IsSucceed)
-                return Ok(loginResult);
+                if (loginResult.IsSucceed)
+                    return Ok(loginResult);
 
-            return Unauthorized(loginResult);
+                return Unauthorized(loginResult);
+            }
+            catch 
+            {
+
+                return BadRequest();
+            }
+          
         }
         [HttpGet]
         public async Task<IActionResult> GetAllUser()
@@ -65,15 +91,33 @@ namespace ApiPetShop.Controllers
         [Route("GetUseByEmail/{email}")]
         public async Task<IActionResult> GetUserByEmail( string email)
         {
-            var user = await _AcRepo.GetUserByEmail(email);
-            return user == null ? NotFound() : Ok(user);
+            try
+            {
+                var user = await _AcRepo.GetUserByEmail(email);
+                return user == null ? NotFound() : Ok(user);
+            }
+            catch (Exception)
+            {
+
+                return BadRequest();
+            }
+            
         }
         [HttpGet]
         [Route("GetUserById/{id}")]
         public async Task<IActionResult> GetUserById( string id)
         {
-            var user = await _AcRepo.GetUserById(id);
-            return user == null ? NotFound() : Ok(user);
+            try
+            {
+                var user = await _AcRepo.GetUserById(id);
+                return user == null ? NotFound() : Ok(user);
+            }
+            catch 
+            {
+
+                return BadRequest();
+            }
+          
         }
         [HttpPost]
         [Route("make-admin")]

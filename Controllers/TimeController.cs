@@ -33,8 +33,16 @@ namespace ApiPetShop.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetTimeById(int id)
         {
-            var Time = await _bookRepo.GetTimeAsync(id);
-            return Time == null ? NotFound() : Ok(Time);
+            try
+            {
+                var Time = await _bookRepo.GetTimeAsync(id);
+                return Time == null ? NotFound() : Ok(Time);
+            }
+            catch
+            {
+                return BadRequest();
+            }
+           
         }
         [HttpPost]
          

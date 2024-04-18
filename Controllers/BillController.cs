@@ -1,5 +1,4 @@
-﻿using ApiPetShop.Data;
-using ApiPetShop.Interface;
+﻿using ApiPetShop.Interface;
 using ApiPetShop.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -12,13 +11,10 @@ namespace ApiPetShop.Controllers
     public class BillController : ControllerBase
     {
         private readonly IBillRepository _bookRepo;
-   
-        private readonly IUserRepository _acRepo;
 
-        public BillController(IBillRepository repository, IUserRepository acRepo)
+        public BillController(IBillRepository repository)
         {
             _bookRepo = repository;
-            _acRepo = acRepo;
         }
         [HttpGet]
         public async Task<IActionResult> GetAllBill()
@@ -75,9 +71,6 @@ namespace ApiPetShop.Controllers
             try
             {
                 await _bookRepo.UpdateBillAsync(id, BillModel);
-                var user = await _acRepo.GetUserById(BillModel.IdUser);
-                //await _emailService.SendNewPayAsync("vanhaontl@gmail.com", user.Email, user.Name,
-                //     BillModel.dateTime.ToString().Split(" ").First().Replace("T00:00:00", ""), string.Format("{0:n0}", BillModel.Price));
                 return Ok();
             }
             catch

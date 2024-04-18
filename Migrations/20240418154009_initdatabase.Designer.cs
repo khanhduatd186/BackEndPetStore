@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ApiPetShop.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240413162313_create dataservice")]
-    partial class createdataservice
+    [Migration("20240418154009_initdatabase")]
+    partial class initdatabase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

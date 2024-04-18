@@ -1,5 +1,4 @@
-﻿using ApiPetShop.Data;
-using ApiPetShop.Interface;
+﻿using ApiPetShop.Interface;
 using ApiPetShop.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -12,12 +11,10 @@ namespace ApiPetShop.Controllers
     public class Product_BillController : ControllerBase
     {
         private readonly IProduct_BillRepository _bookRepo;
-        private readonly IUserRepository _acRepo;
 
         public Product_BillController(IProduct_BillRepository repository)
         {
             _bookRepo = repository;
-            
         }
         [HttpGet]
         public async Task<IActionResult> GetAllProduct_Bill()
@@ -72,7 +69,6 @@ namespace ApiPetShop.Controllers
             try
             {
                 await _bookRepo.UpdateProduct_Bill(idBill,idProduct, Product_BillModel);
-               
                 return Ok(true);
             }
             catch
