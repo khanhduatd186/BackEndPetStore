@@ -16,12 +16,15 @@ namespace ApiPetShop.Data
         public DbSet<Product> Products { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Bill> Bills { get; set; }
+        public DbSet<Time> Times { get; set; }
+        public DbSet<Service> services { get; set; }
         public DbSet<Product_Bill> product_Bills { get; set; }
         public DbSet<Product_Cart> product_Carts { get; set; }
+        public DbSet<Service_Cart> service_Carts { get; set; }
         public DbSet<Menu> menus { get; set; }
         public DbSet<ADV> ADVs { get; set; }
         public DbSet<Contact> contacts { get; set; }
-   
+        public DbSet<Service_Detail> Service_Details { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             // quan he nhiu nhiu bill va product bill
@@ -44,7 +47,7 @@ namespace ApiPetShop.Data
                     .HasForeignKey(e => e.IdProduct)
                     .HasConstraintName("FK_ProductBill_Product");
             });
-       
+          
             builder.Entity<ApplicationUser>(b =>
             {
                 b.ToTable("ApplicationUser");
@@ -64,7 +67,32 @@ namespace ApiPetShop.Data
                     .HasForeignKey(e => e.IdProduct)
                     .HasConstraintName("FK_ProductCart_Product");
             });
-           
+            builder.Entity<Service_Cart>(pb =>
+            {
+                pb.ToTable("Service_Cart");
+                pb.HasKey(e => new { e.IdUser, e.IdServie });
+                pb.HasOne(e => e.applicationUser)
+                    .WithMany(e => e.Service_Carts)
+                    .HasForeignKey(e => e.IdUser)
+                    .HasConstraintName("FK_ServiceCart_Cart");
+                pb.HasOne(e => e.service)
+                    .WithMany(e => e.service_Carts)
+                    .HasForeignKey(e => e.IdServie)
+                    .HasConstraintName("FK_ServiceCart_Product");
+            });
+            builder.Entity<Service_Detail>(pb =>
+            {
+                pb.ToTable("Service_Detail");
+                pb.HasKey(e => new { e.IdService, e.IdTime });
+                pb.HasOne(e => e.service)
+                    .WithMany(e => e.service_Details)
+                    .HasForeignKey(e => e.IdService)
+                    .HasConstraintName("FK_ServiceDetail_Service");
+                pb.HasOne(e => e.time)
+                    .WithMany(e => e.service_Details)
+                    .HasForeignKey(e => e.IdTime)
+                    .HasConstraintName("FK_ServiceDetail_Time");
+            });
             base.OnModelCreating(builder);
         }
 
