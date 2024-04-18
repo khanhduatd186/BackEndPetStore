@@ -18,7 +18,6 @@ namespace ApiPetShop.Helper
             CreateMap<Contact, ContactModel>().ReverseMap();
             CreateMap<ADV, ADVModel>().ReverseMap();
             CreateMap<Product_Bill, Product_BillModel>().ReverseMap();
-            CreateMap<Service_Bill, Service_BillModel>().ReverseMap();
             CreateMap<Product_Cart, Product_CartModel>().ReverseMap();
             CreateMap<Service_Cart, Service_CartModel>().ReverseMap();
             CreateMap<Service_Detail, Service_DetailModel>().ReverseMap();
